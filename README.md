@@ -15,6 +15,11 @@ The incoming fields are mapped into a standardized structure. The workflow then 
 
 For a higher-risk result, the workflow adds a `risk_level` value and sends the resulting structured JSON payload to an external endpoint using an HTTP POST request.
 
+## Workflow Diagram
+
+<img width="1862" height="891" alt="Screenshot 2026-09-22 10 02 23 AM" src="https://github.com/user-attachments/assets/4c85be14-1bd7-48b7-a469-c2c73aa2a4c0" />
+
+
 ## Workflow
 
 Input → Field Mapping → Data Normalization → Risk Logic → Risk Classification → HTTP POST
