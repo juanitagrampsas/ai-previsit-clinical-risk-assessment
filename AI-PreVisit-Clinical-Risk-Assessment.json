@@ -1,0 +1,297 @@
+{
+  "name": "AI Pre-Visit Clinical Risk Assessment",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        64
+      ],
+      "id": "ba75a008-d1ac-49d3-bf78-b8ef3cb22b6d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f39ce08b-e0b5-4c0b-8464-f7b44ed56c56",
+              "name": "Patient_Id",
+              "value": "Test-001",
+              "type": "string"
+            },
+            {
+              "id": "58a27f02-5095-4321-8907-7324562df918",
+              "name": "age",
+              "value": 67,
+              "type": "number"
+            },
+            {
+              "id": "d49da3b7-78b2-4223-b48f-702f25cd0137",
+              "name": "appointment_type",
+              "value": "Primary Care Follow-up",
+              "type": "string"
+            },
+            {
+              "id": "eedd1f52-e667-4b3d-899a-39298c7b8f13",
+              "name": "systolic_bp",
+              "value": 168,
+              "type": "number"
+            },
+            {
+              "id": "27364ccd-ab42-4f93-b193-d06ecb84c9c0",
+              "name": "diastolic_bp",
+              "value": 96,
+              "type": "number"
+            },
+            {
+              "id": "cb7acbc3-ec4d-493c-bb65-fe1b66d7ee24",
+              "name": "A1C",
+              "value": 8.4,
+              "type": "number"
+            },
+            {
+              "id": "8f1b9f17-82ed-4473-bfaa-b123463ea32a",
+              "name": "recent_er_visit",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        64
+      ],
+      "id": "1d1d92c1-cc9b-49aa-93ae-1c8ed74aacfe",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "843fafef-81be-4d3f-8b68-bc5288869f54",
+              "name": "patient_id",
+              "value": "={{ $json.Patient_Id }}",
+              "type": "string"
+            },
+            {
+              "id": "8916db47-84e0-42cc-90b3-df059dcd5e67",
+              "name": "patient_age",
+              "value": "={{ $json.age }}",
+              "type": "number"
+            },
+            {
+              "id": "0be3b5e0-1de2-4bb8-aa9a-7b6fdef196d6",
+              "name": "blood_pressure_systolic",
+              "value": "={{ $json.systolic_bp }}",
+              "type": "number"
+            },
+            {
+              "id": "3f05e114-98c8-4ca4-b296-16737aaac058",
+              "name": "hemoglobin_a1c",
+              "value": "={{ $json.A1C }}",
+              "type": "number"
+            },
+            {
+              "id": "d513edf4-7e14-4043-a45d-6cf646c95cfa",
+              "name": "recent_emergency_visit",
+              "value": "={{ $json.recent_er_visit ? \"YES\" : \"NO\" }}",
+              "type": "string"
+            },
+            {
+              "id": "9cc23592-94a7-4db4-97f3-09e90c6b3a0f",
+              "name": "blood_pressure_diastolic",
+              "value": "={{ $json.diastolic_bp }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        528,
+        64
+      ],
+      "id": "e4fbb477-4447-4fbc-8b03-9c3c7c6dc7e4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "df36d563-a4cd-4f35-a6bc-98fe3256ad28",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        -352
+      ],
+      "id": "49bf5605-7117-4f69-8b55-0f563de96003",
+      "name": "Webhook",
+      "webhookId": "df36d563-a4cd-4f35-a6bc-98fe3256ad28"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4b39eed0-0d78-4adb-a554-8ed36f19943c",
+              "leftValue": "={{ $json.hemoglobin_a1c }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        752,
+        64
+      ],
+      "id": "25ef7929-ca2e-40bf-a313-d2e1734bd142",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e6103c1b-8324-41a5-b65e-550660aef525",
+              "name": "risk_level",
+              "value": "HIGH",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        976,
+        -32
+      ],
+      "id": "041a7855-90c9-4283-b032-7c292814e806",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/YOUR-WEBHOOK-ID",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1200,
+        -32
+      ],
+      "id": "378e7c0b-97bc-46b8-a87a-ee1c0df4e3cb",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "dfafd6ef-31e5-4026-a3d4-5e50b2c0af60",
+  "nodeGroups": [],
+  "id": "DFRP3eQEVMa8a3Tu",
+  "tags": []
+}
